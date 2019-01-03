@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <io.h>
+#include <conio.h>
+#include <string.h>
+
 char *getAbsltPath(char *first, char *last);
 void generateDirTree(char *dirpath);
 
 int main(int argc, char *argv[])
 {
-	char dirpath[] = "E:\\Python-Server\\Workspace\\nginx\\html";
+	char dirpath[] = "D:\\DevEnvironment\\CTestDir_Tempspace";
 	getch();
 	generateDirTree(dirpath);
 	getch();
@@ -36,16 +39,18 @@ void generateDirTree(char *dirpath)
 	{
 		while (_findnext(Handle, &FileInfo) == 0)
 			if (strcmp(FileInfo.name, "..") != 0 && strcmp(FileInfo.name, "plugin") != 0 && strcmp(FileInfo.name, "images") != 0 && strcmp(FileInfo.name, "uploads") != 0)
-				if (FileInfo.attrib == _A_SUBDIR)
+            {
+                char *FileInfoName = FileInfo.name;
+                char *recentPath = getAbsltPath(dirpath, FileInfoName);
+                if (FileInfo.attrib == _A_SUBDIR)
 				{
-					char *recentDirpath = getAbsltPath(dirpath, &(FileInfo.name));
-					generateDirTree(recentDirpath);
+					generateDirTree(recentPath);
 				}
 				else
 				{
-					char *recentPath = getAbsltPath(dirpath, &(FileInfo.name));
 					printf("%s--%u\n", recentPath, FileInfo.attrib);
 				}
+            }
 		_findclose(Handle);
 	}
 }
